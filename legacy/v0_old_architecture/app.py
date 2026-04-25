@@ -52,7 +52,8 @@ def reprint():
 
     values = tree.item(item)["values"]
 
-    os.startfile(values[2])
+    if os.path.exists(values[2]):
+        os.startfile(values[2])
 
 
 root = tk.Tk()
