@@ -1,4 +1,5 @@
 import os
+import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from generator import generate_label
@@ -12,23 +13,20 @@ class TXTHandler(FileSystemEventHandler):
         self.log_callback = log_callback
 
     def on_created(self, event):
-    
-        print("File event detected:", event.src_path)
-    
-        if event.src_path.endswith(".txt"):
-    
-            with open(event.src_path, "r") as f:
-                line = f.read().strip()
-    
-            parts = line.split(",")
-    
-            print("Parsed data:", parts)
-    
-            pdf = generate_label(parts, self.output_folder)
-    
-            print("PDF created:", pdf)
-    
-            self.log_callback(parts[1], parts[0], pdf)
+
+        if not event.src_path.endswith(".txt"):
+            return
+
+        time.sleep(0.5)
+
+        with open(event.src_path, "r") as f:
+            line = f.read().strip()
+
+        parts = line.split(",")
+
+        pdf = generate_label(parts, self.output_folder)
+
+        self.log_callback(parts[1], parts[0], pdf)
 
 
 def start_watcher(input_folder, output_folder, log_callback):
