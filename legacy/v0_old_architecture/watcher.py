@@ -12,16 +12,22 @@ class TXTHandler(FileSystemEventHandler):
         self.log_callback = log_callback
 
     def on_created(self, event):
-
+    
+        print("File event detected:", event.src_path)
+    
         if event.src_path.endswith(".txt"):
-
-            with open(event.src_path,"r") as f:
+    
+            with open(event.src_path, "r") as f:
                 line = f.read().strip()
-
+    
             parts = line.split(",")
-
+    
+            print("Parsed data:", parts)
+    
             pdf = generate_label(parts, self.output_folder)
-
+    
+            print("PDF created:", pdf)
+    
             self.log_callback(parts[1], parts[0], pdf)
 
 
