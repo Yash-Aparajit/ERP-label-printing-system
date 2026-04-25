@@ -224,6 +224,32 @@ Before deployment:
 
 ---
 
+---
+
+## 🗂️ Legacy Code
+
+This repository also includes an earlier version of the system for reference:
+
+legacy/
+└── v0_old_architecture/
+
+### ⚠️ Important Notes
+
+- This code represents the **initial prototype / older architecture**
+- It is **not used in production**
+- It may contain **inefficient logic, bugs, or outdated design**
+- It is kept strictly for:
+  - historical reference
+  - debugging comparison
+  - understanding evolution of the system
+
+### 🚫 Do Not Use
+
+Do NOT use anything inside the `legacy/` folder for deployment or production purposes.
+
+---
+
+
 ## 📄 License
 
 MIT License
