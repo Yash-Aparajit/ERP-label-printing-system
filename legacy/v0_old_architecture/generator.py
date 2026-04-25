@@ -1,9 +1,8 @@
+import os
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 import barcode
 from barcode.writer import ImageWriter
-import os
-
 
 def generate_label(data, output_folder):
 
