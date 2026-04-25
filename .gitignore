@@ -216,3 +216,24 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Database
+database/*.db
+
+# Generated files
+stickers/pdf/*
+stickers/error_files/*
+stickers/yet_to_print/*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# PyInstaller
+dist/
+build/
+*.spec
