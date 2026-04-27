@@ -17,7 +17,7 @@ class TXTHandler(FileSystemEventHandler):
         if not event.src_path.endswith(".txt"):
             return
 
-        time.sleep(0.5)
+        time.sleep(1.5)
 
         with open(event.src_path, "r") as f:
             line = f.read().strip()
@@ -25,6 +25,8 @@ class TXTHandler(FileSystemEventHandler):
         parts = line.split(",")
 
         pdf = generate_label(parts, self.output_folder)
+
+        os.remove(event.src_path)
 
         self.log_callback(parts[1], parts[0], pdf)
 
