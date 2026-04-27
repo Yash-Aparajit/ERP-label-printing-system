@@ -81,5 +81,6 @@ observer = start_watcher(INPUT_FOLDER, PDF_FOLDER, add_log)
 load_logs()
 
 root.mainloop()
+
 observer.stop()
 observer.join()
