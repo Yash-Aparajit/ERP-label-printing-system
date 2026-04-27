@@ -115,7 +115,7 @@ def update_dashboard():
         last_label.config(text=f"Last Label: {last[0]}")
 
 
-root = tk.Tk()
+root = tk.Window(themename="flatly")
 
 root.title("Label Printing System")
 root.geometry("1100x650")
