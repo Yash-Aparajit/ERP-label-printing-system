@@ -3,7 +3,6 @@ from tkinter import ttk
 import sqlite3
 import os
 from watcher import start_watcher
-from generator import generate_label
 
 INPUT_FOLDER = "yet_to_print"
 PDF_FOLDER = "pdf"
@@ -11,7 +10,7 @@ PDF_FOLDER = "pdf"
 os.makedirs(INPUT_FOLDER, exist_ok=True)
 os.makedirs(PDF_FOLDER, exist_ok=True)
 
-conn = sqlite3.connect("database.db")
+conn = sqlite3.connect("database.db", check_same_thread=False)
 cur = conn.cursor()
 
 cur.execute("""
@@ -42,6 +41,8 @@ def load_logs():
     for row in cur.execute("SELECT ul,plant,pdf FROM labels ORDER BY id DESC"):
         tree.insert("",tk.END,values=row)
 
+    tree.yview_moveto(1)
+
 
 def reprint():
 
@@ -52,8 +53,10 @@ def reprint():
 
     values = tree.item(item)["values"]
 
-    if os.path.exists(values[2]):
-        os.startfile(values[2])
+    pdf_path = os.path.abspath(values[2])
+
+    if os.path.exists(pdf_path):
+        os.startfile(pdf_path)
 
 
 root = tk.Tk()
@@ -78,6 +81,5 @@ observer = start_watcher(INPUT_FOLDER, PDF_FOLDER, add_log)
 load_logs()
 
 root.mainloop()
-
 observer.stop()
 observer.join()
