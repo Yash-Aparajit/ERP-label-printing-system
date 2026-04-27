@@ -115,13 +115,65 @@ def update_dashboard():
         last_label.config(text=f"Last Label: {last[0]}")
 
 
-root = tk.Window(themename="flatly")
+root = tk.Window(themename="litera")
 
 root.title("Label Printing System")
 root.geometry("1100x650")
 
+topbar = tk.Frame(root)
+topbar.pack(fill="x")
+
+toggle = ThemeToggle(topbar, root)
+toggle.pack(side="right", padx=15, pady=10)
+
 notebook = ttk.Notebook(root)
 notebook.pack(fill="both", expand=True)
+
+
+# ---------------------------------------------------
+# Dashboard Tab
+# ---------------------------------------------------
+class ThemeToggle(tk.Frame):
+
+    def __init__(self, parent, root):
+        super().__init__(parent)
+
+        self.root = root
+        self.dark = False
+
+        self.canvas = tk.Canvas(self, width=60, height=28, highlightthickness=0)
+        self.canvas.pack()
+
+        self.bg = self.canvas.create_oval(2,2,58,26, fill="#ddd", outline="")
+        self.knob = self.canvas.create_oval(4,4,24,24, fill="white", outline="")
+
+        self.canvas.bind("<Button-1>", self.toggle)
+
+    def animate(self, start, end):
+
+        steps = 12
+        delta = (end-start)/steps
+
+        for i in range(steps):
+            self.canvas.move(self.knob, delta, 0)
+            self.canvas.update()
+            self.canvas.after(10)
+
+    def toggle(self, event=None):
+
+        if self.dark:
+
+            self.animate(34,4)
+            self.root.style.theme_use("litera")
+            self.canvas.itemconfig(self.bg, fill="#ddd")
+
+        else:
+
+            self.animate(4,34)
+            self.root.style.theme_use("cyborg")
+            self.canvas.itemconfig(self.bg, fill="#444")
+
+        self.dark = not self.dark
 
 # ---------------------------------------------------
 # Dashboard Tab
