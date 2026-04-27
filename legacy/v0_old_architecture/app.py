@@ -13,6 +13,60 @@ PDF_FOLDER = "pdf"
 os.makedirs(INPUT_FOLDER, exist_ok=True)
 os.makedirs(PDF_FOLDER, exist_ok=True)
 
+
+title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",14,"bold"))
+title.pack(side="left", padx=15)
+
+# ---------------------------------------------------
+# Theme Toggle 
+# ---------------------------------------------------
+
+class ThemeToggle(tk.Frame):
+
+    def __init__(self, parent, root):
+        super().__init__(parent)
+
+        self.root = root
+        self.dark = False
+
+        self.canvas = tk.Canvas(self, width=60, height=28, highlightthickness=0)
+        self.canvas.pack()
+
+        self.bg = self.canvas.create_oval(2,2,58,26, fill="#ddd", outline="")
+        self.knob = self.canvas.create_oval(4,4,24,24, fill="white", outline="")
+
+        self.canvas.bind("<Button-1>", self.toggle)
+
+    def animate(self, direction):
+
+        steps = 12
+        move = 2.5 if direction == "right" else -2.5
+
+        for _ in range(steps):
+            self.canvas.move(self.knob, move, 0)
+            self.canvas.update()
+            self.canvas.after(10)
+
+    def toggle(self, event=None):
+
+        if self.dark:
+
+            self.animate("left")
+            self.root.style.theme_use("litera")
+            self.canvas.itemconfig(self.bg, fill="#ddd")
+
+        else:
+
+            self.animate("right")
+            self.root.style.theme_use("cyborg")
+            self.canvas.itemconfig(self.bg, fill="#444")
+
+        self.dark = not self.dark
+
+# ---------------------------------------------------
+# Database Setup 
+# ---------------------------------------------------
+
 conn = sqlite3.connect("database.db", check_same_thread=False)
 cur = conn.cursor()
 
@@ -118,7 +172,8 @@ def update_dashboard():
 root = tk.Window(themename="litera")
 
 root.title("Label Printing System")
-root.geometry("1100x650")
+root.geometry("1200x720")
+root.minsize(1000,600)
 
 topbar = tk.Frame(root)
 topbar.pack(fill="x")
@@ -128,52 +183,6 @@ toggle.pack(side="right", padx=15, pady=10)
 
 notebook = ttk.Notebook(root)
 notebook.pack(fill="both", expand=True)
-
-
-# ---------------------------------------------------
-# Dashboard Tab
-# ---------------------------------------------------
-class ThemeToggle(tk.Frame):
-
-    def __init__(self, parent, root):
-        super().__init__(parent)
-
-        self.root = root
-        self.dark = False
-
-        self.canvas = tk.Canvas(self, width=60, height=28, highlightthickness=0)
-        self.canvas.pack()
-
-        self.bg = self.canvas.create_oval(2,2,58,26, fill="#ddd", outline="")
-        self.knob = self.canvas.create_oval(4,4,24,24, fill="white", outline="")
-
-        self.canvas.bind("<Button-1>", self.toggle)
-
-    def animate(self, start, end):
-
-        steps = 12
-        delta = (end-start)/steps
-
-        for i in range(steps):
-            self.canvas.move(self.knob, delta, 0)
-            self.canvas.update()
-            self.canvas.after(10)
-
-    def toggle(self, event=None):
-
-        if self.dark:
-
-            self.animate(34,4)
-            self.root.style.theme_use("litera")
-            self.canvas.itemconfig(self.bg, fill="#ddd")
-
-        else:
-
-            self.animate(4,34)
-            self.root.style.theme_use("cyborg")
-            self.canvas.itemconfig(self.bg, fill="#444")
-
-        self.dark = not self.dark
 
 # ---------------------------------------------------
 # Dashboard Tab
