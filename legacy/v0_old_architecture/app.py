@@ -26,7 +26,8 @@ class ThemeToggle(tk.Frame):
         self.root = root
         self.dark = False
 
-        self.canvas = tk.Canvas(self, width=70, height=30, highlightthickness=0, bg=self.master.cget("bg"))
+        self.canvas = tk.Canvas(self, width=70, height=30, highlightthickness=0)
+        self.canvas.configure(bg=self.master.winfo_toplevel().cget("background"))
         self.canvas.pack()
 
         self.bg = self.canvas.create_oval(2,2,68,28, fill="#1db954", outline="")
@@ -283,4 +284,3 @@ root.mainloop()
 
 observer.stop()
 observer.join()
-
