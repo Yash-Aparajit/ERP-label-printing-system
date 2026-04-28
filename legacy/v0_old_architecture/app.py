@@ -14,9 +14,6 @@ os.makedirs(INPUT_FOLDER, exist_ok=True)
 os.makedirs(PDF_FOLDER, exist_ok=True)
 
 
-title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",14,"bold"))
-title.pack(side="left", padx=15)
-
 # ---------------------------------------------------
 # Theme Toggle 
 # ---------------------------------------------------
@@ -29,7 +26,7 @@ class ThemeToggle(tk.Frame):
         self.root = root
         self.dark = False
 
-        self.canvas = tk.Canvas(self, width=60, height=28, highlightthickness=0)
+        self.canvas = tk.Canvas(self, width=70, height=30, highlightthickness=0, bg=self.master.cget("bg"))
         self.canvas.pack()
 
         self.bg = self.canvas.create_oval(2,2,58,26, fill="#ddd", outline="")
@@ -180,6 +177,10 @@ topbar.pack(fill="x")
 
 toggle = ThemeToggle(topbar, root)
 toggle.pack(side="right", padx=15, pady=10)
+
+title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",14,"bold"))
+title.pack(side="left", padx=15)
+
 
 notebook = ttk.Notebook(root)
 notebook.pack(fill="both", expand=True)
