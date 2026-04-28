@@ -56,4 +56,3 @@ def generate_label(data, output_folder):
     c.save()
 
     return pdf_path
-
