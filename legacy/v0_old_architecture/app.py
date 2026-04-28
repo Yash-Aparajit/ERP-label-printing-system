@@ -29,7 +29,7 @@ class ThemeToggle(tk.Frame):
         self.canvas = tk.Canvas(self, width=70, height=30, highlightthickness=0, bg=self.master.cget("bg"))
         self.canvas.pack()
 
-        self.bg = self.canvas.create_oval(2,2,58,26, fill="#ddd", outline="")
+        self.bg = self.canvas.create_oval(2,2,68,28, fill="#1db954", outline="")
         self.knob = self.canvas.create_oval(4,4,24,24, fill="white", outline="")
 
         self.canvas.bind("<Button-1>", self.toggle)
