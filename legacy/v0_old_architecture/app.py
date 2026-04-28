@@ -42,6 +42,7 @@ class ThemeToggle(tk.Frame):
 
         for _ in range(steps):
             self.canvas.move(self.knob, move, 0)
+            self.canvas.move(self.icon, move, 0)
             self.canvas.update()
             self.canvas.after(10)
 
@@ -51,13 +52,15 @@ class ThemeToggle(tk.Frame):
 
             self.animate("left")
             self.root.style.theme_use("litera")
-            self.canvas.itemconfig(self.bg, fill="#ddd")
+            self.canvas.itemconfig(self.bg, fill="#1db954")
+            self.canvas.itemconfig(self.icon, text="☀")
 
         else:
 
             self.animate("right")
             self.root.style.theme_use("cyborg")
             self.canvas.itemconfig(self.bg, fill="#444")
+            self.canvas.itemconfig(self.icon, text="🌙")
 
         self.dark = not self.dark
 
