@@ -171,6 +171,8 @@ def update_dashboard():
 
 
 root = tk.Window(themename="litera")
+root.style.configure("Treeview", rowheight=28)
+root.style.configure(".", font=("Segoe UI",10))
 
 root.title("Label Printing System")
 root.geometry("1200x720")
