@@ -187,7 +187,7 @@ topbar.pack(fill="x")
 toggle = ThemeToggle(topbar, root)
 toggle.pack(side="right", padx=15, pady=10)
 
-title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",14,"bold"))
+title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",18,"bold"))
 title.pack(side="left", padx=15)
 
 
