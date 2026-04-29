@@ -30,8 +30,10 @@ class ThemeToggle(tk.Frame):
         self.canvas.configure(bg=self.master.winfo_toplevel().cget("background"))
         self.canvas.pack()
 
-        self.bg = self.canvas.create_oval(2,2,68,28, fill="#1db954", outline="")
-        self.knob = self.canvas.create_oval(4,4,26,26, fill="white", outline="")
+        self.track = self.canvas.create_rectangle(2,6,68,24, fill="#2a2a2a", outline="", width=0)
+        self.canvas.itemconfig(self.track, smooth=True)
+        self.glow = self.canvas.create_oval(2,2,30,30, fill="#1db954", outline="")
+        self.knob = self.canvas.create_oval(6,6,24,24, fill="white", outline="")
         self.icon = self.canvas.create_text(15,15,text="☀",font=("Segoe UI",10,"bold"))
 
         self.canvas.bind("<Button-1>", self.toggle)
