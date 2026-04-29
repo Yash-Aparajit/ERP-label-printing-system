@@ -181,7 +181,7 @@ root.title("Label Printing System")
 root.geometry("1200x720")
 root.minsize(1000,600)
 
-topbar = tk.Frame(root)
+topbar = tk.Frame(root, padding=10)
 topbar.pack(fill="x")
 
 toggle = ThemeToggle(topbar, root)
