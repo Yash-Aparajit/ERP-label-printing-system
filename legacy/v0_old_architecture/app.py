@@ -192,7 +192,7 @@ title.pack(side="left", padx=15)
 
 
 notebook = ttk.Notebook(root)
-notebook.pack(fill="both", expand=True)
+notebook.pack(fill="both", expand=True, padx=10, pady=5)
 
 # ---------------------------------------------------
 # Dashboard Tab
