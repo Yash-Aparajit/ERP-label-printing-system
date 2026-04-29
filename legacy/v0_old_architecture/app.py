@@ -27,7 +27,7 @@ class ThemeToggle(tk.Frame):
         self.dark = False
 
         self.canvas = tk.Canvas(self, width=70, height=30, highlightthickness=0)
-        self.canvas.configure(bg=self.master.cget("background"))
+        self.canvas.configure(bg="#00000000")
         self.canvas.pack()
 
         self.track = self.canvas.create_rectangle(2,6,68,24, fill="#2a2a2a", outline="", width=0)
@@ -286,3 +286,4 @@ root.mainloop()
 
 observer.stop()
 observer.join()
+
