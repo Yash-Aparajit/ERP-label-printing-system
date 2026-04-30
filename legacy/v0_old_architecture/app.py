@@ -27,7 +27,7 @@ class ThemeToggle(tk.Frame):
         self.dark = False
 
         self.canvas = tk.Canvas(self, width=70, height=30, highlightthickness=0)
-        self.canvas.configure(bg="#00000000")
+        self.canvas.configure(bg=self.master.winfo_toplevel().cget("background"))
         self.canvas.pack()
 
         self.track = self.canvas.create_rectangle(2,6,68,24, fill="#2a2a2a", outline="", width=0)
@@ -48,6 +48,8 @@ class ThemeToggle(tk.Frame):
             self.canvas.move(self.knob, move*ease, 0)
             self.canvas.move(self.icon, move*ease, 0)
             self.canvas.move(self.glow, move*ease, 0)
+            self.canvas.update()
+            self.canvas.after(8)
 
     def toggle(self, event=None):
 
@@ -55,14 +57,14 @@ class ThemeToggle(tk.Frame):
 
             self.animate("left")
             self.root.style.theme_use("litera")
-            self.canvas.itemconfig(self.bg, fill="#1db954")
+            self.canvas.itemconfig(self.track, fill="#1db954")
             self.canvas.itemconfig(self.icon, text="☀")
 
         else:
 
             self.animate("right")
             self.root.style.theme_use("cyborg")
-            self.canvas.itemconfig(self.glow, fill="#1db954")
+            self.canvas.itemconfig(self.glow, fill="#3ddc84")
             self.canvas.itemconfig(self.icon, text="🌙")
 
         self.dark = not self.dark
@@ -286,4 +288,3 @@ root.mainloop()
 
 observer.stop()
 observer.join()
-
