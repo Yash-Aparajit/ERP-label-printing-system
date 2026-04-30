@@ -183,6 +183,8 @@ root.geometry("1200x720")
 root.minsize(1000,600)
 
 topbar = tk.Frame(root, padding=(20,12))
+topbar.pack(fill="x")
+
 separator = ttk.Separator(root)
 separator.pack(fill="x")
 
