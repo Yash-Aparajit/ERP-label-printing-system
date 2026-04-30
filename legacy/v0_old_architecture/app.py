@@ -30,7 +30,7 @@ class ThemeToggle(tk.Frame):
         self.canvas.configure(bg=self.master.winfo_toplevel().cget("background"))
         self.canvas.pack()
 
-        self.track = self.canvas.create_rectangle(2,6,68,24, fill="#2a2a2a", outline="", width=0)
+        self.track = self.canvas.create_rectangle(2,8,68,22, fill="#2a2a2a", outline="", width=0)
         self.canvas.itemconfig(self.track, smooth=True)
         self.glow = self.canvas.create_oval(2,2,30,30, fill="#1db954", outline="")
         self.knob = self.canvas.create_oval(6,6,24,24, fill="white", outline="")
@@ -183,8 +183,9 @@ root.title("Label Printing System")
 root.geometry("1200x720")
 root.minsize(1000,600)
 
-topbar = tk.Frame(root, padding=10)
-topbar.pack(fill="x")
+topbar = tk.Frame(root, padding=(20,12))
+separator = ttk.Separator(root)
+separator.pack(fill="x")
 
 toggle = ThemeToggle(topbar, root)
 toggle.pack(side="right", padx=15, pady=10)
