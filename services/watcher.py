@@ -70,7 +70,15 @@ def worker(output_folder, error_folder, log_callback):
 
             os.remove(file_path)
 
-            log_callback(parts[1], parts[0], pdf)
+            log_callback(
+                parts[1],   # UL
+                parts[0],   # Plant
+                parts[2],   # EDI
+                parts[4],   # Qty
+                parts[5],   # Created by
+                "SUCCESS",
+                pdf
+            )
 
         except Exception as e:
 
@@ -90,6 +98,7 @@ def start_watcher(input_folder, output_folder, error_folder, log_callback):
     observer.schedule(event_handler, input_folder, recursive=False)
     observer.start()
 
+    
     worker_thread = threading.Thread(
         target=worker,
         args=(output_folder, error_folder, log_callback),
@@ -99,4 +108,3 @@ def start_watcher(input_folder, output_folder, error_folder, log_callback):
     worker_thread.start()
 
     return observer
-
