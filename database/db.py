@@ -11,10 +11,15 @@ def init_db():
     cur.execute("""
     CREATE TABLE IF NOT EXISTS labels(
     id INTEGER PRIMARY KEY,
-    ul TEXT,
+    date TEXT,
+    time TEXT,
     plant TEXT,
-    pdf TEXT,
-    time TEXT
+    ul TEXT,
+    edi TEXT,
+    qty TEXT,
+    created_by TEXT,
+    status TEXT,
+    pdf TEXT
     )
     """)
 
@@ -23,16 +28,18 @@ def init_db():
     return conn, cur
 
 
-def add_log(ul, plant, pdf):
+def add_log(ul, plant, edi, qty, created_by, status, pdf):
 
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
 
-    now = datetime.now().strftime("%H:%M:%S")
+    now_time = datetime.now().strftime("%H:%M:%S")
+    now_date = datetime.now().strftime("%d/%m/%Y")
 
     cur.execute(
-        "INSERT INTO labels(ul,plant,pdf,time) VALUES(?,?,?,?)",
-        (ul, plant, pdf, now)
+        """INSERT INTO labels(date,time,plant,ul,edi,qty,created_by,status,pdf)
+        VALUES(?,?,?,?,?,?,?,?,?)""",
+        (now_date, now_time, plant, ul, edi, qty, created_by, status, pdf)
     )
 
     conn.commit()
@@ -44,7 +51,9 @@ def load_logs(tree, cur):
     for i in tree.get_children():
         tree.delete(i)
 
-    for row in cur.execute("SELECT ul,plant,pdf,time FROM labels ORDER BY id DESC"):
+    for row in cur.execute(
+        "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels ORDER BY id DESC"
+    ):
         tree.insert("", "end", values=row)
 
 
@@ -66,15 +75,16 @@ def export_excel():
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
 
-    rows = list(cur.execute("SELECT ul,plant,pdf,time FROM labels"))
+    rows = list(cur.execute(
+        "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels"
+    ))
 
     if not rows:
         return
 
-    df = pd.DataFrame(rows, columns=["UL Counter", "Plant", "PDF File", "Time"])
+    df = pd.DataFrame(rows, columns=["Date","Time","Plant","UL Counter","EDI","Qty","Created By","Status","PDF"])
 
     filename = f"label_logs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
 
     df.to_excel(filename, index=False)
-
     os.startfile(filename)
