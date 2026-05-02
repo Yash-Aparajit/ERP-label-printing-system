@@ -12,20 +12,24 @@ def create_logs(parent):
 
     tree = ttk.Treeview(
         table_frame,
-        columns=("UL", "Plant", "PDF", "Time"),
+        columns=("Date","Time","Plant","UL","EDI","Qty","Created","Status","PDF"),
         show="headings",
         yscrollcommand=scrollbar.set
     )
 
-    tree.heading("UL", text="UL Counter")
-    tree.heading("Plant", text="Plant")
-    tree.heading("PDF", text="PDF File")
+    tree.heading("Date", text="Date")
     tree.heading("Time", text="Time")
+    tree.heading("Plant", text="Plant")
+    tree.heading("UL", text="UL Counter")
+    tree.heading("EDI", text="EDI")
+    tree.heading("Qty", text="Qty")
+    tree.heading("Created", text="Created By")
+    tree.heading("Status", text="Status")
+    tree.heading("PDF", text="PDF File")
 
     tree.pack(fill="both", expand=True)
 
     scrollbar.config(command=tree.yview)
 
     search_var = None
-
     return logs, tree, search_var
