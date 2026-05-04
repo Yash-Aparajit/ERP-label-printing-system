@@ -62,12 +62,24 @@ def search_logs(tree, cur, text):
     for i in tree.get_children():
         tree.delete(i)
 
-    query = "SELECT ul,plant,pdf,time FROM labels ORDER BY id DESC"
+    query = """
+    SELECT date,time,plant,ul,edi,qty,created_by,status,pdf
+    FROM labels
+    WHERE
+        ul LIKE ?
+        OR plant LIKE ?
+        OR edi LIKE ?
+        OR date LIKE ?
+    ORDER BY id DESC
+    """
 
-    for row in cur.execute(query):
+    rows = cur.execute(
+        query,
+        (f"%{text}%", f"%{text}%", f"%{text}%", f"%{text}%")
+    )
 
-        if text.lower() in row[0].lower():
-            tree.insert("", "end", values=row)
+    for row in rows:
+        tree.insert("", "end", values=row)
 
 
 def export_excel():
@@ -87,4 +99,5 @@ def export_excel():
     filename = f"label_logs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
 
     df.to_excel(filename, index=False)
+
     os.startfile(filename)
