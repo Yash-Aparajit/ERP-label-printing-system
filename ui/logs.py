@@ -10,6 +10,8 @@ def create_logs(parent):
     search_label = ttk.Label(search_frame, text="Search:")
     search_label.pack(side="left")
 
+    search_var = tk.StringVar()
+
     search_entry = ttk.Entry(search_frame, textvariable=search_var, width=30)
     search_entry.bind("<Return>", lambda e: run_search())
     search_button = ttk.Button(search_frame, text="Search")
@@ -43,8 +45,6 @@ def create_logs(parent):
 
     scrollbar.config(command=tree.yview)
 
-    search_var = tk.StringVar()
-
     def run_search():
         text = search_var.get()
         from database.db import search_logs
@@ -58,5 +58,6 @@ def create_logs(parent):
         conn.close()
 
     search_button.config(command=run_search)
+    search_entry.bind("<Return>", lambda e: run_search())
 
     return logs, tree, search_var
