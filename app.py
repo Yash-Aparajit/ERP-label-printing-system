@@ -47,6 +47,10 @@ notebook.add(logs_frame, text="Logs & Reprint")
 observer = start_watcher(INPUT_FOLDER, PDF_FOLDER, ERROR_FOLDER, add_log)
 
 load_logs(tree, cur)
+count, last_ul = dashboard_stats()
+
+count_label.config(text=str(count))
+last_label.config(text=last_ul)
 root.mainloop()
 
 observer.stop()
