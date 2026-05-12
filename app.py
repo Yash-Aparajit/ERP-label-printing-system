@@ -3,7 +3,7 @@ from ttkbootstrap.constants import *
 from tkinter import ttk
 import os
 
-from database.db import init_db, add_log, load_logs, search_logs, export_excel
+from database.db import init_db, add_log, load_logs, search_logs, export_excel, dashboard_stats
 from services.watcher import start_watcher
 from ui.dashboard import create_dashboard
 from ui.logs import create_logs
