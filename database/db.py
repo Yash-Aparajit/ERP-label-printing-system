@@ -122,4 +122,5 @@ def dashboard_stats():
     conn.close()
 
     last_ul = last[0] if last else "-"
+
     return count, last_ul
