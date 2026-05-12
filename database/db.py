@@ -101,3 +101,25 @@ def export_excel():
     df.to_excel(filename, index=False)
 
     os.startfile(filename)
+
+def dashboard_stats():
+
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
+
+    from datetime import datetime
+    today = datetime.now().strftime("%d/%m/%Y")
+
+    count = cur.execute(
+        "SELECT COUNT(*) FROM labels WHERE date=?",
+        (today,)
+    ).fetchone()[0]
+
+    last = cur.execute(
+        "SELECT ul FROM labels ORDER BY id DESC LIMIT 1"
+    ).fetchone()
+
+    conn.close()
+
+    last_ul = last[0] if last else "-"
+    return count, last_ul
