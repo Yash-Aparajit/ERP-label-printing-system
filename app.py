@@ -63,7 +63,22 @@ count, last_ul = dashboard_stats()
 
 count_label.config(text=str(count))
 last_label.config(text=last_ul)
+
+def update_status():
+
+    queue_size = get_queue_size()
+
+    status_label.config(
+        text=f"🟢 Watching Folder | Queue: {queue_size} | Printer: Ready"
+    )
+
+    root.after(1000, update_status)
+
+update_status()
+
+
 root.mainloop()
 
 observer.stop()
 observer.join()
+
