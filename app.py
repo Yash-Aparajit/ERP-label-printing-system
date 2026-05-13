@@ -33,11 +33,6 @@ topbar.pack(fill="x")
 title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",18,"bold"))
 title.pack(side="left")
 
-sidebar = create_sidebar(root)
-
-notebook = ttk.Notebook(root)
-notebook.pack(fill="both", expand=True, padx=10, pady=5)
-
 status_frame = ttk.Frame(root)
 status_frame.pack(fill="x", side="bottom")
 
@@ -50,11 +45,24 @@ status_label = ttk.Label(
 
 status_label.pack(fill="x", padx=10, pady=5)
 
-dashboard, count_label, last_label = create_dashboard(notebook)
-logs_frame, tree, search_var = create_logs(notebook)
+content = ttk.Frame(root)
+content.pack(fill="both", expand=True)
 
-notebook.add(dashboard, text="Dashboard")
-notebook.add(logs_frame, text="Logs & Reprint")
+dashboard, count_label, last_label = create_dashboard(content)
+logs_frame, tree, search_var = create_logs(content)
+
+dashboard.place(relwidth=1, relheight=1)
+logs_frame.place(relwidth=1, relheight=1)
+
+dashboard.lift()
+
+def show_dashboard():
+    dashboard.lift()
+
+def show_logs():
+    logs_frame.lift()
+
+sidebar = create_sidebar(root, show_dashboard, show_logs)
 
 observer = start_watcher(INPUT_FOLDER, PDF_FOLDER, ERROR_FOLDER, add_log)
 
@@ -78,6 +86,5 @@ update_status()
 
 
 root.mainloop()
-
 observer.stop()
 observer.join()
