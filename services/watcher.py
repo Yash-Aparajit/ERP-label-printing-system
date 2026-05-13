@@ -13,6 +13,9 @@ import sqlite3
 
 processing_queue = queue.Queue()
 
+def get_queue_size():
+    return processing_queue.qsize()
+
 class TXTHandler(FileSystemEventHandler):
 
     def __init__(self, input_folder):
@@ -98,7 +101,6 @@ def start_watcher(input_folder, output_folder, error_folder, log_callback):
     observer.schedule(event_handler, input_folder, recursive=False)
     observer.start()
 
-    
     worker_thread = threading.Thread(
         target=worker,
         args=(output_folder, error_folder, log_callback),
