@@ -81,4 +81,3 @@ root.mainloop()
 
 observer.stop()
 observer.join()
-
