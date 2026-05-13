@@ -4,7 +4,7 @@ from tkinter import ttk
 import os
 
 from database.db import init_db, add_log, load_logs, search_logs, export_excel, dashboard_stats
-from services.watcher import start_watcher
+from services.watcher import start_watcher, get_queue_size
 from ui.dashboard import create_dashboard
 from ui.logs import create_logs
 from ui.sidebar import create_sidebar
@@ -37,6 +37,18 @@ sidebar = create_sidebar(root)
 
 notebook = ttk.Notebook(root)
 notebook.pack(fill="both", expand=True, padx=10, pady=5)
+
+status_frame = ttk.Frame(root)
+status_frame.pack(fill="x", side="bottom")
+
+status_label = ttk.Label(
+    status_frame,
+    text="Watching Folder | Queue: 0 | Printer: Ready",
+    anchor="w",
+    font=("Segoe UI",10)
+)
+
+status_label.pack(fill="x", padx=10, pady=5)
 
 dashboard, count_label, last_label = create_dashboard(notebook)
 logs_frame, tree, search_var = create_logs(notebook)
