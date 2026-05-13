@@ -34,6 +34,7 @@ def create_dashboard(parent):
         text="-",
         font=("Segoe UI",24,"bold")
     )
+    
     last_label.pack(anchor="w", padx=10, pady=5)
 
     return dashboard, count_label, last_label
