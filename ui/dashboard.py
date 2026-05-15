@@ -1,40 +1,68 @@
 from tkinter import ttk
 
+
 def create_dashboard(parent):
 
     dashboard = ttk.Frame(parent)
 
-    status_frame = ttk.LabelFrame(dashboard, text="System Status")
-    today_title = ttk.Label(
-        status_frame,
-        text="Labels Today",
-        font=("Segoe UI",14)
+    container = ttk.Frame(dashboard)
+    container.pack(fill="both", expand=True, padx=30, pady=30)
+
+    # ---------- CARD STYLE ----------
+    style = ttk.Style()
+
+    style.configure(
+        "Card.TFrame",
+        background="#ffffff",
+        relief="flat"
     )
-    today_title.pack(anchor="w", padx=10)
 
-    status_frame.pack(fill="x", padx=20, pady=20)
+    style.configure(
+        "CardTitle.TLabel",
+        font=("Segoe UI",12)
+    )
 
-    count_label = ttk.Label(
-        status_frame,
-        text="0",
-        font=("Segoe UI",40,"bold"),
+    style.configure(
+        "CardValue.TLabel",
+        font=("Segoe UI",36,"bold"),
         foreground="#0078D7"
     )
-    count_label.pack(anchor="w", padx=10, pady=5)
 
-    last_title = ttk.Label(
-        status_frame,
-        text="Last UL Processed",
-        font=("Segoe UI",14)
+    # ---------- CARD 1 ----------
+    card1 = ttk.Frame(container, style="Card.TFrame", padding=20)
+    card1.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+    ttk.Label(
+        card1,
+        text="Labels Today",
+        style="CardTitle.TLabel"
+    ).pack(anchor="w")
+
+    count_label = ttk.Label(
+        card1,
+        text="0",
+        style="CardValue.TLabel"
     )
-    last_title.pack(anchor="w", padx=10, pady=(10,0))
+    count_label.pack(anchor="w", pady=10)
+
+    # ---------- CARD 2 ----------
+    card2 = ttk.Frame(container, style="Card.TFrame", padding=20)
+    card2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+    ttk.Label(
+        card2,
+        text="Last UL Processed",
+        style="CardTitle.TLabel"
+    ).pack(anchor="w")
 
     last_label = ttk.Label(
-        status_frame,
+        card2,
         text="-",
-        font=("Segoe UI",24,"bold")
+        font=("Segoe UI",20,"bold")
     )
-    
-    last_label.pack(anchor="w", padx=10, pady=5)
+    last_label.pack(anchor="w", pady=10)
+
+    container.columnconfigure(0, weight=1)
+    container.columnconfigure(1, weight=1)
 
     return dashboard, count_label, last_label
