@@ -45,7 +45,10 @@ status_label = ttk.Label(
 
 status_label.pack(fill="x", padx=10, pady=5)
 
-content = ttk.Frame(root)
+main_area = ttk.Frame(root)
+main_area.pack(side="left", fill="both", expand=True)
+
+content = ttk.Frame(main_area)
 content.pack(fill="both", expand=True)
 
 dashboard, count_label, last_label = create_dashboard(content)
@@ -86,5 +89,7 @@ update_status()
 
 
 root.mainloop()
+
 observer.stop()
 observer.join()
+
