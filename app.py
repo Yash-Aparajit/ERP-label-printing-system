@@ -66,6 +66,7 @@ def show_logs():
     logs_frame.lift()
 
 sidebar = create_sidebar(root, show_dashboard, show_logs)
+sidebar.lift()
 
 observer = start_watcher(INPUT_FOLDER, PDF_FOLDER, ERROR_FOLDER, add_log)
 
