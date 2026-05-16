@@ -4,8 +4,9 @@ from tkinter import ttk
 def create_logs(parent):
 
     logs = ttk.Frame(parent)
-    search_frame = ttk.Frame(logs)
-    search_frame.pack(fill="x", padx=10, pady=5)
+    search_frame = ttk.Frame(logs, padding=10)
+    search_frame.pack(fill="x", padx=15, pady=10)
+
 
     search_label = ttk.Label(search_frame, text="Search:")
     search_label.pack(side="left")
@@ -30,6 +31,9 @@ def create_logs(parent):
         show="headings",
         yscrollcommand=scrollbar.set
     )
+
+    tree.tag_configure("odd", background="#f7f9fc")
+    tree.tag_configure("even", background="#ffffff")
 
     tree.heading("Date", text="Date")
     tree.heading("Time", text="Time")
