@@ -4,9 +4,31 @@ from tkinter import ttk
 
 def create_sidebar(root, show_dashboard, show_logs):
 
-    sidebar = ttk.Frame(root, width=220)
+    sidebar = ttk.Frame(root, width=230)
     sidebar.pack(side="left", fill="y")
     sidebar.pack_propagate(False)
+
+    # ---------- STYLE ----------
+    style = ttk.Style()
+
+    style.configure(
+        "Sidebar.TButton",
+        font=("Segoe UI",11),
+        anchor="w",
+        padding=12
+    )
+
+    style.configure(
+        "SidebarActive.TButton",
+        font=("Segoe UI",11,"bold"),
+        anchor="w",
+        padding=12
+    )
+
+    style.map(
+        "Sidebar.TButton",
+        background=[("active","#e6f0ff")]
+    )
 
     # ---------- LOGO ----------
     logo_frame = ttk.Frame(sidebar)
@@ -29,55 +51,32 @@ def create_sidebar(root, show_dashboard, show_logs):
         sidebar,
         text="Navigation",
         font=("Segoe UI",11,"bold")
-    ).pack(anchor="w", padx=20, pady=(10,10))
-
-    # ---------- BUTTON STYLE ----------
-    style = ttk.Style()
-
-    style.configure(
-        "Sidebar.TButton",
-        font=("Segoe UI",11),
-        anchor="w",
-        padding=10
-    )
-
-    style.map(
-        "Sidebar.TButton",
-        background=[("active","#e8f0fe")]
-    )
-
-    style.configure(
-        "SidebarActive.TButton",
-        font=("Segoe UI",11,"bold"),
-        anchor="w",
-        padding=10,
-        background="#d2e3fc"
-    )
+    ).pack(anchor="w", padx=20, pady=(15,10))
 
     # ---------- BUTTONS ----------
     dashboard_btn = ttk.Button(
         sidebar,
-        text="  Dashboard",
+        text="📊  Dashboard",
         style="SidebarActive.TButton"
     )
 
     logs_btn = ttk.Button(
         sidebar,
-        text="  Logs",
+        text="📄  Logs",
         style="Sidebar.TButton"
     )
 
     settings_btn = ttk.Button(
         sidebar,
-        text="  Settings",
+        text="⚙️  Settings",
         style="Sidebar.TButton"
     )
 
-    dashboard_btn.pack(fill="x", padx=15, pady=3)
-    logs_btn.pack(fill="x", padx=15, pady=3)
-    settings_btn.pack(fill="x", padx=15, pady=3)
+    dashboard_btn.pack(fill="x", padx=15, pady=4)
+    logs_btn.pack(fill="x", padx=15, pady=4)
+    settings_btn.pack(fill="x", padx=15, pady=4)
 
-    # ---------- ACTIVE STATE ----------
+    # ---------- ACTIVE SWITCH ----------
     def activate(btn):
 
         dashboard_btn.configure(style="Sidebar.TButton")
