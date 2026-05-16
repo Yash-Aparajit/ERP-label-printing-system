@@ -36,6 +36,24 @@ topbar.pack(fill="x")
 title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",18,"bold"))
 title.pack(side="left")
 
+theme_var = tk.BooleanVar()
+
+def toggle_theme():
+    if theme_var.get():
+        root.style.theme_use("cyborg")
+    else:
+        root.style.theme_use("litera")
+
+theme_switch = ttk.Checkbutton(
+    topbar,
+    text="🌙 Dark Mode",
+    variable=theme_var,
+    command=toggle_theme,
+    bootstyle="switch"
+)
+
+theme_switch.pack(side="right")
+
 status_frame = ttk.Frame(main_container)
 status_frame.pack(fill="x", side="bottom")
 
