@@ -27,13 +27,16 @@ root.minsize(1000,600)
 root.style.configure("Treeview", rowheight=28)
 root.style.configure(".", font=("Segoe UI",10))
 
-topbar = tk.Frame(root, padding=(20,12))
+main_container = ttk.Frame(root)
+main_container.pack(fill="both", expand=True)
+
+topbar = tk.Frame(main_container, padding=(20,12))
 topbar.pack(fill="x")
 
 title = ttk.Label(topbar, text="Label Printing System", font=("Segoe UI",18,"bold"))
 title.pack(side="left")
 
-status_frame = ttk.Frame(root)
+status_frame = ttk.Frame(main_container)
 status_frame.pack(fill="x", side="bottom")
 
 status_label = ttk.Label(
@@ -48,8 +51,11 @@ status_label.pack(fill="x", padx=10, pady=5)
 main_area = ttk.Frame(root)
 main_area.pack(side="left", fill="both", expand=True)
 
-content = ttk.Frame(main_area)
-content.pack(fill="both", expand=True)
+body = ttk.Frame(main_container)
+body.pack(fill="both", expand=True)
+
+content = ttk.Frame(body)
+content.pack(side="right", fill="both", expand=True)
 
 dashboard, count_label, last_label = create_dashboard(content)
 logs_frame, tree, search_var = create_logs(content)
@@ -65,7 +71,7 @@ def show_dashboard():
 def show_logs():
     logs_frame.lift()
 
-sidebar = create_sidebar(root, show_dashboard, show_logs)
+sidebar = create_sidebar(body, show_dashboard, show_logs)
 sidebar.lift()
 
 observer = start_watcher(INPUT_FOLDER, PDF_FOLDER, ERROR_FOLDER, add_log)
