@@ -14,7 +14,7 @@ def init_db():
     date TEXT,
     time TEXT,
     plant TEXT,
-    ul TEXT,
+    ul TEXT UNIQUE,
     edi TEXT,
     qty TEXT,
     created_by TEXT,
@@ -36,14 +36,24 @@ def add_log(ul, plant, edi, qty, created_by, status, pdf):
     now_time = datetime.now().strftime("%H:%M:%S")
     now_date = datetime.now().strftime("%d/%m/%Y")
 
-    cur.execute(
-        """INSERT INTO labels(date,time,plant,ul,edi,qty,created_by,status,pdf)
-        VALUES(?,?,?,?,?,?,?,?,?)""",
-        (now_date, now_time, plant, ul, edi, qty, created_by, status, pdf)
-    )
+    try:
 
-    conn.commit()
-    conn.close()
+        cur.execute(
+            """INSERT INTO labels(date,time,plant,ul,edi,qty,created_by,status,pdf)
+            VALUES(?,?,?,?,?,?,?,?,?)""",
+            (now_date, now_time, plant, ul, edi, qty, created_by, status, pdf)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return True
+
+    except sqlite3.IntegrityError:
+
+        conn.close()
+
+        return False
 
 
 def load_logs(tree, cur):
