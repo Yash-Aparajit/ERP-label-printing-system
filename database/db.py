@@ -54,7 +54,11 @@ def load_logs(tree, cur):
     for row in cur.execute(
         "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels ORDER BY id DESC"
     ):
-        tree.insert("", "end", values=row)
+        index = len(tree.get_children())
+
+        tag = "even" if index % 2 == 0 else "odd"
+
+        tree.insert("", "end", values=row, tags=(tag,))
 
 
 def search_logs(tree, cur, text):
