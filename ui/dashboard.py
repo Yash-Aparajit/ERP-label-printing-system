@@ -13,7 +13,8 @@ def create_dashboard(parent):
     style.configure(
         "Card.TFrame",
         background="#ffffff",
-        relief="flat"
+        relief="solid",
+        borderwidth=1
     )
 
     style.configure(
@@ -27,6 +28,7 @@ def create_dashboard(parent):
         foreground="#0d6efd"
     )
 
+    
     # ---------- CARD GRID ----------
     card1 = ttk.Frame(container, style="Card.TFrame", padding=25)
     card1.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
@@ -53,6 +55,7 @@ def create_dashboard(parent):
         style="CardTitle.TLabel"
     ).pack(anchor="w")
 
+    
     last_label = ttk.Label(
         card2,
         text="-",
@@ -63,4 +66,5 @@ def create_dashboard(parent):
     container.columnconfigure(0, weight=1)
     container.columnconfigure(1, weight=1)
 
+    
     return dashboard, count_label, last_label
