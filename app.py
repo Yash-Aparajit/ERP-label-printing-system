@@ -66,9 +66,6 @@ status_label = ttk.Label(
 
 status_label.pack(fill="x", padx=10, pady=5)
 
-main_area = ttk.Frame(root)
-main_area.pack(side="left", fill="both", expand=True)
-
 body = ttk.Frame(main_container)
 body.pack(fill="both", expand=True)
 
@@ -117,4 +114,3 @@ root.mainloop()
 
 observer.stop()
 observer.join()
-
