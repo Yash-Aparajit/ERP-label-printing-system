@@ -46,8 +46,23 @@ def worker(output_folder, error_folder, log_callback):
             if size1 != size2:
                 time.sleep(0.5)
 
-            with open(file_path, "r") as f:
-                line = f.read().strip()
+            for _ in range(3):
+
+                try:
+
+                    with open(file_path, "r") as f:
+                        line = f.read().strip()
+
+                    if line:
+                        break
+
+                except:
+
+                    time.sleep(0.5)
+
+            else:
+
+                raise Exception("File read failed")
 
             parts = line.split(",")
 
