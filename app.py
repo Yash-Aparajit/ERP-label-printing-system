@@ -5,6 +5,7 @@ import os
 
 from database.db import init_db, add_log, load_logs, search_logs, export_excel, dashboard_stats
 from services.watcher import start_watcher, get_queue_size
+from services.printer_monitor import get_printer_status
 from ui.dashboard import create_dashboard
 from ui.logs import create_logs
 from ui.sidebar import create_sidebar
@@ -101,16 +102,24 @@ def update_status():
 
     queue_size = get_queue_size()
 
+    printer_status = get_printer_status()
+
+    icon = "🟢"
+
+    if printer_status != "Ready":
+        icon = "🟡"
+
+    if printer_status in ["Offline", "Error", "Not Found"]:
+        icon = "🔴"
+
     status_label.config(
-        text=f"🟢 Watching Folder | Queue: {queue_size} | Printer: Ready"
+        text=f"{icon} Watching Folder | Queue: {queue_size} | Printer: {printer_status}"
     )
 
     root.after(1000, update_status)
 
 update_status()
 
-
 root.mainloop()
-
 observer.stop()
 observer.join()
