@@ -73,15 +73,15 @@ def worker(output_folder, error_folder, log_callback):
 
             os.remove(file_path)
 
-            log_callback(
-                parts[1],   # UL
-                parts[0],   # Plant
-                parts[2],   # EDI
-                parts[4],   # Qty
-                parts[5],   # Created by
-                "SUCCESS",
-                pdf
-            )
+            result = log_callback(parts[1], parts[0], parts[2], parts[4], parts[5], "SUCCESS", pdf)
+
+            if result is False:
+
+                print("Duplicate UL detected → moving file to error folder")
+
+                shutil.move(file_path, os.path.join(error_folder, os.path.basename(file_path)))
+
+                continue
 
         except Exception as e:
 
