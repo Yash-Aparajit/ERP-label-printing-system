@@ -121,7 +121,5 @@ def start_watcher(input_folder, output_folder, error_folder, log_callback):
         args=(output_folder, error_folder, log_callback),
         daemon=True
     )
-
     worker_thread.start()
-
     return observer
