@@ -72,6 +72,13 @@ def create_sidebar(root, show_dashboard, show_logs):
         style="Sidebar.TButton"
     )
 
+    errors_btn = ttk.Button(
+        sidebar,
+        text="❌  Errors",
+        style="Sidebar.TButton"
+    )
+
+    errors_btn.pack(fill="x", padx=15, pady=4)
     dashboard_btn.pack(fill="x", padx=15, pady=4)
     logs_btn.pack(fill="x", padx=15, pady=4)
     settings_btn.pack(fill="x", padx=15, pady=4)
