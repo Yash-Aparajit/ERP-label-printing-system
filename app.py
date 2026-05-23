@@ -226,6 +226,5 @@ root.mainloop()
 # ==============================
 # CLEAN SHUTDOWN
 # ==============================
-
 observer.stop()
 observer.join()
