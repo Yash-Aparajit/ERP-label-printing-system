@@ -9,6 +9,7 @@ from services.printer_monitor import get_printer_status
 from ui.dashboard import create_dashboard
 from ui.logs import create_logs
 from ui.sidebar import create_sidebar
+from ui.errors import create_errors
 
 INPUT_FOLDER = "yet_to_print"
 PDF_FOLDER = "pdf"
@@ -120,6 +121,8 @@ def update_status():
 
 update_status()
 
+
 root.mainloop()
+
 observer.stop()
 observer.join()
