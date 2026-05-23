@@ -1,25 +1,51 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import os
 
+
+# ==============================
+# DATABASE FOLDER
+# ==============================
+
+DB_FOLDER = "database"
+os.makedirs(DB_FOLDER, exist_ok=True)
+
+
+# ==============================
+# GET CURRENT DB FILE
+# ==============================
+
+def get_db_path():
+
+    year = datetime.now().year
+
+    return os.path.join(DB_FOLDER, f"labels_{year}.db")
+
+
+# ==============================
+# INIT DATABASE
+# ==============================
+
 def init_db():
 
-    conn = sqlite3.connect("database.db", check_same_thread=False)
+    db_path = get_db_path()
+
+    conn = sqlite3.connect(db_path, check_same_thread=False)
     cur = conn.cursor()
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS labels(
-    id INTEGER PRIMARY KEY,
-    date TEXT,
-    time TEXT,
-    plant TEXT,
-    ul TEXT UNIQUE,
-    edi TEXT,
-    qty TEXT,
-    created_by TEXT,
-    status TEXT,
-    pdf TEXT
+        id INTEGER PRIMARY KEY,
+        date TEXT,
+        time TEXT,
+        plant TEXT,
+        ul TEXT UNIQUE,
+        edi TEXT,
+        qty TEXT,
+        created_by TEXT,
+        status TEXT,
+        pdf TEXT
     )
     """)
 
@@ -28,13 +54,21 @@ def init_db():
     return conn, cur
 
 
+# ==============================
+# ADD LOG
+# ==============================
+
 def add_log(ul, plant, edi, qty, created_by, status, pdf):
 
-    conn = sqlite3.connect("database.db")
+    db_path = get_db_path()
+
+    conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
-    now_time = datetime.now().strftime("%H:%M:%S")
-    now_date = datetime.now().strftime("%d/%m/%Y")
+    now = datetime.now()
+
+    now_time = now.strftime("%H:%M:%S")
+    now_date = now.strftime("%d/%m/%Y")
 
     try:
 
@@ -52,9 +86,12 @@ def add_log(ul, plant, edi, qty, created_by, status, pdf):
     except sqlite3.IntegrityError:
 
         conn.close()
-
         return False
 
+
+# ==============================
+# LOAD LOGS (CURRENT YEAR)
+# ==============================
 
 def load_logs(tree, cur):
 
@@ -64,12 +101,17 @@ def load_logs(tree, cur):
     for row in cur.execute(
         "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels ORDER BY id DESC"
     ):
+
         index = len(tree.get_children())
 
         tag = "even" if index % 2 == 0 else "odd"
 
         tree.insert("", "end", values=row, tags=(tag,))
 
+
+# ==============================
+# SEARCH LOGS
+# ==============================
 
 def search_logs(tree, cur, text):
 
@@ -96,19 +138,77 @@ def search_logs(tree, cur, text):
         tree.insert("", "end", values=row)
 
 
-def export_excel():
+# ==============================
+# GET ALL DATABASE FILES
+# ==============================
 
-    conn = sqlite3.connect("database.db")
-    cur = conn.cursor()
+def get_all_databases():
 
-    rows = list(cur.execute(
-        "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels"
-    ))
+    dbs = []
+
+    for file in os.listdir(DB_FOLDER):
+
+        if file.endswith(".db"):
+            dbs.append(os.path.join(DB_FOLDER, file))
+
+    return sorted(dbs)
+
+
+# ==============================
+# EXPORT LOGS
+# ==============================
+
+def export_excel(mode="full"):
+
+    rows = []
+
+    now = datetime.now()
+
+    if mode == "24h":
+        cutoff = now - timedelta(hours=24)
+
+    elif mode == "week":
+        cutoff = now - timedelta(days=7)
+
+    elif mode == "month":
+        cutoff = now - timedelta(days=30)
+
+    else:
+        cutoff = None
+
+
+    for db in get_all_databases():
+
+        conn = sqlite3.connect(db)
+        cur = conn.cursor()
+
+        data = cur.execute(
+            "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels"
+        ).fetchall()
+
+        conn.close()
+
+        for r in data:
+
+            dt = datetime.strptime(f"{r[0]} {r[1]}", "%d/%m/%Y %H:%M:%S")
+
+            if cutoff and dt < cutoff:
+                continue
+
+            rows.append(r)
+
 
     if not rows:
         return
 
-    df = pd.DataFrame(rows, columns=["Date","Time","Plant","UL Counter","EDI","Qty","Created By","Status","PDF"])
+
+    df = pd.DataFrame(
+        rows,
+        columns=[
+            "Date","Time","Plant","UL Counter",
+            "EDI","Qty","Created By","Status","PDF"
+        ]
+    )
 
     filename = f"label_logs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
 
@@ -116,12 +216,18 @@ def export_excel():
 
     os.startfile(filename)
 
+
+# ==============================
+# DASHBOARD STATS
+# ==============================
+
 def dashboard_stats():
 
-    conn = sqlite3.connect("database.db")
+    db_path = get_db_path()
+
+    conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
-    from datetime import datetime
     today = datetime.now().strftime("%d/%m/%Y")
 
     count = cur.execute(
@@ -136,5 +242,4 @@ def dashboard_stats():
     conn.close()
 
     last_ul = last[0] if last else "-"
-
     return count, last_ul
