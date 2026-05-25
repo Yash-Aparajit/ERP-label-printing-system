@@ -8,7 +8,7 @@ import os
 # DATABASE FOLDER
 # ==============================
 
-DB_FOLDER = "database"
+DB_FOLDER = "data"
 os.makedirs(DB_FOLDER, exist_ok=True)
 
 
@@ -242,4 +242,5 @@ def dashboard_stats():
     conn.close()
 
     last_ul = last[0] if last else "-"
+
     return count, last_ul
