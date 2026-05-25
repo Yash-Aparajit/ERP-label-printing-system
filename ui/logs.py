@@ -1,11 +1,48 @@
 import tkinter as tk
 from tkinter import ttk
+from database.db import export_excel
 
 def create_logs(parent):
 
     logs = ttk.Frame(parent)
     search_frame = ttk.Frame(logs, padding=10)
     search_frame.pack(fill="x", padx=15, pady=10)
+
+    # ==============================
+    # EXPORT BUTTONS
+    # ==============================
+
+    export_frame = ttk.Frame(logs)
+    export_frame.pack(fill="x", padx=15, pady=(0,10))
+
+    btn_24h = ttk.Button(
+        export_frame,
+        text="Export 24h",
+        command=lambda: export_excel("24h")
+    )
+
+    btn_week = ttk.Button(
+        export_frame,
+        text="Export Week",
+        command=lambda: export_excel("week")
+    )
+
+    btn_month = ttk.Button(
+        export_frame,
+        text="Export Month",
+        command=lambda: export_excel("month")
+    )
+
+    btn_full = ttk.Button(
+        export_frame,
+        text="Export Full",
+        command=lambda: export_excel("full")
+    )
+
+    btn_24h.pack(side="left", padx=5)
+    btn_week.pack(side="left", padx=5)
+    btn_month.pack(side="left", padx=5)
+    btn_full.pack(side="left", padx=5)
 
 
     search_label = ttk.Label(search_frame, text="Search:")
