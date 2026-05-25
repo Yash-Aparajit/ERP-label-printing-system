@@ -81,6 +81,16 @@ def create_logs(parent):
         for item in selected:
             tree.item(item, tags=("selected_row",))
 
+    def on_hover(event):
+
+        row = tree.identify_row(event.y)
+
+        if row != tree.focus():
+            tree.selection_remove(tree.selection())
+            tree.selection_set(row)
+
+    tree.bind("<Motion>", on_hover)
+
     tree.bind("<<TreeviewSelect>>", on_row_select)
 
     tree.tag_configure("odd", background="#f7f9fc")
