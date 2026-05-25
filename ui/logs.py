@@ -69,6 +69,20 @@ def create_logs(parent):
         yscrollcommand=scrollbar.set
     )
 
+    tree.tag_configure("selected_row", background="#dbeafe")
+
+    def on_row_select(event):
+
+        for item in tree.get_children():
+            tree.item(item, tags=())
+
+        selected = tree.selection()
+
+        for item in selected:
+            tree.item(item, tags=("selected_row",))
+
+    tree.bind("<<TreeviewSelect>>", on_row_select)
+
     tree.tag_configure("odd", background="#f7f9fc")
     tree.tag_configure("even", background="#ffffff")
 
@@ -81,6 +95,15 @@ def create_logs(parent):
     tree.heading("Created", text="Created By")
     tree.heading("Status", text="Status")
     tree.heading("PDF", text="PDF File")
+    tree.column("Date", width=90, anchor="center")
+    tree.column("Time", width=80, anchor="center")
+    tree.column("Plant", width=70, anchor="center")
+    tree.column("UL", width=140)
+    tree.column("EDI", width=120)
+    tree.column("Qty", width=80, anchor="center")
+    tree.column("Created", width=110)
+    tree.column("Status", width=100)
+    tree.column("PDF", width=200)
 
     tree.pack(fill="both", expand=True)
 
