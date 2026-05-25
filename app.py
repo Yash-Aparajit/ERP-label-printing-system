@@ -217,6 +217,20 @@ update_status()
 
 
 # ==============================
+# AUTO REFRESH LOGS
+# ==============================
+
+def auto_refresh_logs():
+
+    load_logs(tree, cur)
+
+    root.after(2000, auto_refresh_logs)
+
+
+auto_refresh_logs()
+
+
+# ==============================
 # START UI
 # ==============================
 
@@ -226,5 +240,6 @@ root.mainloop()
 # ==============================
 # CLEAN SHUTDOWN
 # ==============================
+
 observer.stop()
 observer.join()
