@@ -222,7 +222,8 @@ update_status()
 
 def auto_refresh_logs():
 
-    load_logs(tree, cur)
+    if search_var.get().strip() == "":
+        load_logs(tree, cur)
 
     root.after(2000, auto_refresh_logs)
 
