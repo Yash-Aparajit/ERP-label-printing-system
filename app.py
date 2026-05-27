@@ -17,9 +17,11 @@ from ui.errors import create_errors
 # FOLDERS
 # ==============================
 
-INPUT_FOLDER = "yet_to_print"
-PDF_FOLDER = "pdf"
-ERROR_FOLDER = "error_files"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+INPUT_FOLDER = os.path.join(BASE_DIR, "yet_to_print")
+PDF_FOLDER = os.path.join(BASE_DIR, "pdf")
+ERROR_FOLDER = os.path.join(BASE_DIR, "error_files")
 
 os.makedirs(INPUT_FOLDER, exist_ok=True)
 os.makedirs(PDF_FOLDER, exist_ok=True)
