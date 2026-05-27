@@ -122,7 +122,7 @@ def create_logs(parent):
     tree.heading("Qty", text="Qty")
     tree.heading("Created", text="Created By")
     tree.heading("Status", text="Status")
-    tree.heading("PDF", text="PDF File")
+    tree.heading("PDF", text="")
     tree.column("Date", width=90, anchor="center")
     tree.column("Time", width=80, anchor="center")
     tree.column("Plant", width=70, anchor="center")
@@ -131,7 +131,7 @@ def create_logs(parent):
     tree.column("Qty", width=80, anchor="center")
     tree.column("Created", width=110)
     tree.column("Status", width=100)
-    tree.column("PDF", width=200)
+    tree.column("PDF", width=0, stretch=False)
 
     tree.pack(fill="both", expand=True)
 
@@ -152,5 +152,4 @@ def create_logs(parent):
 
     search_button.config(command=run_search)
     search_entry.bind("<Return>", lambda e: run_search())
-
     return logs, tree, search_var
