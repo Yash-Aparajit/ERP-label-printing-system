@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import ttk
 from database.db import export_excel
@@ -90,6 +91,23 @@ def create_logs(parent):
             tree.selection_set(row)
 
     tree.bind("<Motion>", on_hover)
+
+    def open_pdf(event):
+
+        selected = tree.selection()
+
+        if not selected:
+            return
+
+        item = tree.item(selected)
+
+        pdf_path = item["values"][8]
+
+        if os.path.exists(pdf_path):
+            os.startfile(pdf_path)
+
+
+    tree.bind("<Double-1>", open_pdf)
 
     tree.bind("<<TreeviewSelect>>", on_row_select)
 
