@@ -1,4 +1,5 @@
 import tkinter as tk
+import os
 from tkinter import ttk
 
 
@@ -35,7 +36,10 @@ def create_sidebar(root, show_dashboard, show_logs, show_errors):
     logo_frame.pack(fill="x", pady=(20,10))
 
     try:
-        logo = tk.PhotoImage(file="assets/logo.png")
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        logo_path = os.path.join(base_dir, "assets", "logo.png")
+
+        logo = tk.PhotoImage(file=logo_path)
         logo_label = ttk.Label(logo_frame, image=logo)
         logo_label.image = logo
         logo_label.pack()
@@ -78,9 +82,9 @@ def create_sidebar(root, show_dashboard, show_logs, show_errors):
         style="Sidebar.TButton"
     )
 
-    errors_btn.pack(fill="x", padx=15, pady=4)
     dashboard_btn.pack(fill="x", padx=15, pady=4)
     logs_btn.pack(fill="x", padx=15, pady=4)
+    errors_btn.pack(fill="x", padx=15, pady=4)
     settings_btn.pack(fill="x", padx=15, pady=4)
 
     # ---------- ACTIVE SWITCH ----------
