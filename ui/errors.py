@@ -2,10 +2,10 @@ import os
 import shutil
 from tkinter import ttk
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-ERROR_FOLDER = "error_files"
-INPUT_FOLDER = "yet_to_print"
-
+ERROR_FOLDER = os.path.join(BASE_DIR, "error_files")
+INPUT_FOLDER = os.path.join(BASE_DIR, "yet_to_print")
 
 def create_errors(parent):
 
