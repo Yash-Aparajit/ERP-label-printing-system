@@ -34,6 +34,15 @@ def init_db():
     conn = sqlite3.connect(db_path, check_same_thread=False)
     cur = conn.cursor()
 
+    ensure_schema(cur)
+
+    conn.commit()
+
+    return conn, cur
+
+
+def ensure_schema(cur):
+
     cur.execute("""
     CREATE TABLE IF NOT EXISTS labels(
         id INTEGER PRIMARY KEY,
@@ -49,11 +58,6 @@ def init_db():
     )
     """)
 
-    conn.commit()
-
-    return conn, cur
-
-
 # ==============================
 # ADD LOG
 # ==============================
@@ -64,6 +68,8 @@ def add_log(ul, plant, edi, qty, created_by, status, pdf):
 
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
+
+    ensure_schema(cur)
 
     now = datetime.now()
 
