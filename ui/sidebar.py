@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 
-def create_sidebar(root, show_dashboard, show_logs):
+def create_sidebar(root, show_dashboard, show_logs, show_errors):
 
     sidebar = ttk.Frame(root, width=230)
     sidebar.pack(side="left", fill="y")
@@ -88,6 +88,7 @@ def create_sidebar(root, show_dashboard, show_logs):
 
         dashboard_btn.configure(style="Sidebar.TButton")
         logs_btn.configure(style="Sidebar.TButton")
+        errors_btn.configure(style="Sidebar.TButton")
 
         btn.configure(style="SidebarActive.TButton")
 
@@ -100,7 +101,12 @@ def create_sidebar(root, show_dashboard, show_logs):
         activate(logs_btn)
         show_logs()
 
+    def errors_cmd():
+        activate(errors_btn)
+        show_errors()
+
     dashboard_btn.configure(command=dash_cmd)
     logs_btn.configure(command=logs_cmd)
+    errors_btn.configure(command=errors_cmd)
 
     return sidebar
