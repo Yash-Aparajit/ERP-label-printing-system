@@ -212,7 +212,7 @@ def update_status():
         text=f"{icon} Watching Folder | Queue: {queue_size} | Printer: {printer_status}"
     )
 
-    root.after(1000, update_status)
+    root.after(2000, update_status)
 
 
 update_status()
@@ -237,9 +237,13 @@ auto_refresh_logs()
 # START UI, and SHUTDOWN
 # ==============================
 
-
 try:
     root.mainloop()
 finally:
     observer.stop()
     observer.join()
+
+    try:
+        conn.close()
+    except:
+        pass
