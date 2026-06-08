@@ -10,11 +10,11 @@ def get_printer_status():
 
         handle = win32print.OpenPrinter(PRINTER_NAME)
 
-        info = win32print.GetPrinter(handle, 2)
-
-        status = info["Status"]
-
-        win32print.ClosePrinter(handle)
+        try:
+            info = win32print.GetPrinter(handle, 2)
+            status = info["Status"]
+        finally:
+            win32print.ClosePrinter(handle)
 
         if status == 0:
             return "Ready"
@@ -25,11 +25,14 @@ def get_printer_status():
         if status & win32print.PRINTER_STATUS_OFFLINE:
             return "Offline"
 
+        if status & win32print.PRINTER_STATUS_PAPER_OUT:
+            return "Out of Paper"
+
         if status & win32print.PRINTER_STATUS_ERROR:
             return "Error"
 
         return "Busy"
 
-    except:
+    except Exception:
 
         return "Not Found"
