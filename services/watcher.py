@@ -68,6 +68,12 @@ def worker(output_folder, error_folder, log_callback):
 
             parts = line.split(",")
 
+            # ensure exactly 7 values
+            parts = parts[:7]
+
+            if len(parts) < 7:
+                raise Exception("Invalid TXT format")
+
             if len(parts) < 6:
                 raise Exception("Invalid TXT format")
 
@@ -154,6 +160,7 @@ def start_watcher(input_folder, output_folder, error_folder, log_callback):
     event_handler = TXTHandler(input_folder)
 
     observer = Observer()
+    
     observer.schedule(event_handler, input_folder, recursive=False)
     observer.start()
 
