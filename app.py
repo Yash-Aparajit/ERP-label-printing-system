@@ -234,15 +234,12 @@ auto_refresh_logs()
 
 
 # ==============================
-# START UI
+# START UI, and SHUTDOWN
 # ==============================
 
-root.mainloop()
 
-
-# ==============================
-# CLEAN SHUTDOWN
-# ==============================
-
-observer.stop()
-observer.join()
+try:
+    root.mainloop()
+finally:
+    observer.stop()
+    observer.join()
