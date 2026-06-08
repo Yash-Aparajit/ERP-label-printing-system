@@ -8,7 +8,9 @@ import os
 # DATABASE FOLDER
 # ==============================
 
-DB_FOLDER = "data"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_FOLDER = os.path.join(BASE_DIR, "data")
+
 os.makedirs(DB_FOLDER, exist_ok=True)
 
 
@@ -57,6 +59,7 @@ def ensure_schema(cur):
         pdf TEXT
     )
     """)
+
 
 # ==============================
 # ADD LOG
@@ -182,15 +185,18 @@ def export_excel(mode="full"):
     else:
         cutoff = None
 
-
     for db in get_all_databases():
 
         conn = sqlite3.connect(db)
         cur = conn.cursor()
 
-        data = cur.execute(
-            "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels"
-        ).fetchall()
+        try:
+            data = cur.execute(
+                "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels"
+            ).fetchall()
+        except sqlite3.OperationalError:
+            conn.close()
+            continue
 
         conn.close()
 
@@ -203,16 +209,14 @@ def export_excel(mode="full"):
 
             rows.append(r)
 
-
     if not rows:
         return
-
 
     df = pd.DataFrame(
         rows,
         columns=[
-            "Date","Time","Plant","UL Counter",
-            "EDI","Qty","Created By","Status","PDF"
+            "Date", "Time", "Plant", "UL Counter",
+            "EDI", "Qty", "Created By", "Status", "PDF"
         ]
     )
 
@@ -248,5 +252,4 @@ def dashboard_stats():
     conn.close()
 
     last_ul = last[0] if last else "-"
-
     return count, last_ul
