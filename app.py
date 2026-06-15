@@ -1,6 +1,6 @@
-
 import os
 import ttkbootstrap as tk
+import time
 from ttkbootstrap.constants import *
 from tkinter import ttk
 
@@ -33,7 +33,7 @@ os.makedirs(ERROR_FOLDER, exist_ok=True)
 # DATABASE
 # ==============================
 
-conn, cur = init_db()
+init_db()
 
 
 # ==============================
@@ -184,13 +184,18 @@ observer = start_watcher(
 # INITIAL DATA LOAD
 # ==============================
 
-load_logs(tree, cur)
+load_logs(tree)
 
-count, last_ul = dashboard_stats()
+def update_dashboard():
 
-count_label.config(text=str(count))
-last_label.config(text=last_ul)
+    count, last_ul = dashboard_stats()
 
+    count_label.config(text=str(count))
+    last_label.config(text=last_ul)
+
+    root.after(2000, update_dashboard)
+
+update_dashboard()
 
 # ==============================
 # STATUS MONITOR
@@ -226,7 +231,7 @@ update_status()
 def auto_refresh_logs():
 
     if search_var.get().strip() == "":
-        load_logs(tree, cur)
+        load_logs(tree)
 
     root.after(2000, auto_refresh_logs)
 
@@ -241,10 +246,12 @@ auto_refresh_logs()
 try:
     root.mainloop()
 finally:
+
     observer.stop()
     observer.join()
 
-    try:
-        conn.close()
-    except:
-        pass
+    # allow worker queue to finish briefly
+    for _ in range(5):
+        if get_queue_size() == 0:
+            break
+        time.sleep(1)
