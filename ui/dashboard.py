@@ -19,7 +19,7 @@ def create_dashboard(parent):
 
     style.configure(
         "CardTitle.TLabel",
-        font=("Segoe UI", 12)
+        font=("Segoe UI", 48)
     )
 
     style.configure(
