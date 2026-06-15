@@ -158,7 +158,7 @@ def create_logs(parent):
         if not selected:
             return
 
-        item = tree.item(selected)
+        item = tree.item(selected[0])
 
         pdf_path = item["values"][8]
 
