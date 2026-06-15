@@ -1,14 +1,12 @@
 import win32print
 
 
-PRINTER_NAME = "BIXOLON SLP-TX400"
-
-
 def get_printer_status():
 
     try:
 
-        handle = win32print.OpenPrinter(PRINTER_NAME)
+        printer_name = win32print.GetDefaultPrinter()
+        handle = win32print.OpenPrinter(printer_name)
 
         try:
             info = win32print.GetPrinter(handle, 2)
