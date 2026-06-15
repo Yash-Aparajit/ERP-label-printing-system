@@ -34,14 +34,13 @@ def init_db():
 
     db_path = get_db_path()
 
-    conn = sqlite3.connect(db_path, check_same_thread=False)
+    conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
     ensure_schema(cur)
 
     conn.commit()
-
-    return conn, cur
+    conn.close()            
 
 
 def ensure_schema(cur):
@@ -210,10 +209,9 @@ def export_excel(mode="full"):
                 "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels"
             ).fetchall()
         except sqlite3.OperationalError:
-            conn.close()
             continue
-
-        conn.close()
+        finally:
+            conn.close()
 
         for r in data:
 
