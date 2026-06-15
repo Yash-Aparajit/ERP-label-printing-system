@@ -248,10 +248,11 @@ try:
 finally:
 
     observer.stop()
-    observer.join()
 
     # allow worker queue to finish briefly
     for _ in range(5):
         if get_queue_size() == 0:
             break
         time.sleep(1)
+
+    observer.join()
