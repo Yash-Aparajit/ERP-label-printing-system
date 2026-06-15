@@ -11,6 +11,7 @@ from watchdog.events import FileSystemEventHandler
 from core.generator import generate_label
 from services.printer import print_pdf
 from database.db import get_db_path
+from collections import deque
 
 
 processing_queue = queue.Queue()
@@ -24,6 +25,8 @@ class TXTHandler(FileSystemEventHandler):
 
     def __init__(self, input_folder):
         self.input_folder = input_folder
+        self.recent_files = set()
+        self.recent_files_order = deque(maxlen=500)   # ← add this line
 
     def on_created(self, event):
 
@@ -32,31 +35,60 @@ class TXTHandler(FileSystemEventHandler):
 
         print("File detected:", event.src_path)
 
-        processing_queue.put(event.src_path)
+        if event.src_path not in self.recent_files:
+            self.recent_files.add(event.src_path)
+            self.recent_files_order.append(event.src_path)
+
+            processing_queue.put(event.src_path)
 
 
-def wait_for_file_complete(file_path):
+def wait_for_file_complete(file_path, timeout=10):
 
     last_size = -1
+    start = time.time()
 
     while True:
+
+        if not os.path.exists(file_path):
+            raise Exception("File disappeared during write")
 
         size = os.path.getsize(file_path)
 
         if size == last_size:
-            break
+            return
 
         last_size = size
+
+        if time.time() - start > timeout:
+            raise Exception("File write timeout")
+
         time.sleep(0.3)
+
+
+def safe_move(src, dest_folder):
+
+    name = os.path.basename(src)
+    dest = os.path.join(dest_folder, name)
+
+    if os.path.exists(dest):
+        base, ext = os.path.splitext(name)
+        timestamp = int(time.time())
+        dest = os.path.join(dest_folder, f"{base}_{timestamp}{ext}")
+
+    shutil.move(src, dest)
 
 
 def worker(output_folder, error_folder, log_callback):
 
     while True:
 
-        file_path = processing_queue.get()
+        file_path = processing_queue.get(timeout=1)
 
         try:
+
+            if not os.path.exists(file_path):
+                processing_queue.task_done()
+                continue
 
             wait_for_file_complete(file_path)
 
@@ -66,16 +98,14 @@ def worker(output_folder, error_folder, log_callback):
             if not line:
                 raise Exception("Empty TXT file")
 
-            parts = line.split(",")
-
-            # ensure exactly 7 values
+            parts = [p.strip() for p in line.split(",")]
+            parts = [p for p in parts if p]
             parts = parts[:7]
 
             if len(parts) < 7:
-                raise Exception("Invalid TXT format")
+                raise Exception(f"Invalid TXT format: {parts}")
 
-            if len(parts) < 6:
-                raise Exception("Invalid TXT format")
+            print("Parsed TXT:", parts)
 
             # ==============================
             # Duplicate UL Check
@@ -84,20 +114,20 @@ def worker(output_folder, error_folder, log_callback):
             conn = sqlite3.connect(get_db_path())
             cur = conn.cursor()
 
-            existing = cur.execute(
-                "SELECT ul FROM labels WHERE ul=?",
-                (parts[1],)
-            ).fetchone()
+            try:
+                existing = cur.execute(
+                    "SELECT ul FROM labels WHERE ul=?",
+                    (parts[1],)
+                ).fetchone()
+            except sqlite3.OperationalError:
+                existing = None
 
             conn.close()
 
             if existing:
                 print("Duplicate UL detected → moving to error folder:", parts[1])
 
-                shutil.move(
-                    file_path,
-                    os.path.join(error_folder, os.path.basename(file_path))
-                )
+                safe_move(file_path, error_folder)
 
                 continue
 
@@ -106,8 +136,6 @@ def worker(output_folder, error_folder, log_callback):
             # ==============================
 
             pdf = generate_label(parts, output_folder)
-
-            print_pdf(pdf)
 
             # ==============================
             # Log Entry
@@ -124,12 +152,11 @@ def worker(output_folder, error_folder, log_callback):
 
                 print("Duplicate UL detected at DB level → moving file to error folder")
 
-                shutil.move(
-                    file_path,
-                    os.path.join(error_folder, os.path.basename(file_path))
-                )
+                safe_move(file_path, error_folder)
 
                 continue
+
+            print_pdf(pdf)
 
             # ==============================
             # Delete TXT after success
@@ -143,12 +170,9 @@ def worker(output_folder, error_folder, log_callback):
             print("Processing error:", e)
 
             try:
-                shutil.move(
-                    file_path,
-                    os.path.join(error_folder, os.path.basename(file_path))
-                )
-            except:
-                pass
+                safe_move(file_path, error_folder)
+            except Exception as move_error:
+                print("Failed to move file to error folder:", move_error)
 
         finally:
 
@@ -160,7 +184,6 @@ def start_watcher(input_folder, output_folder, error_folder, log_callback):
     event_handler = TXTHandler(input_folder)
 
     observer = Observer()
-    
     observer.schedule(event_handler, input_folder, recursive=False)
     observer.start()
 
