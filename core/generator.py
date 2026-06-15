@@ -1,4 +1,5 @@
 import os
+import tempfile
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 import barcode
@@ -26,12 +27,17 @@ def draw_label(c, plant, ul, edi, inv, qty, created, time):
     }
 
     code = barcode.get("code128", ul, writer=ImageWriter())
-    barcode_file = code.save(f"temp_barcode_{ul}", options)
+    temp_dir = tempfile.gettempdir()
+    barcode_path = os.path.join(temp_dir, f"temp_barcode_{ul}")
 
-    c.drawImage(barcode_file, 5 * mm, 2 * mm, width=60 * mm, height=9 * mm)
+    barcode_file = None
 
-    if os.path.exists(barcode_file):
-        os.remove(barcode_file)
+    try:
+        barcode_file = code.save(barcode_path, options)
+        c.drawImage(barcode_file, 5 * mm, 2 * mm, width=60 * mm, height=9 * mm)
+    finally:
+        if barcode_file and os.path.exists(barcode_file):
+            os.remove(barcode_file)
 
 
 def generate_label(data, output_folder):
