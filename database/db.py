@@ -10,9 +10,10 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_FOLDER = os.path.join(BASE_DIR, "data")
+EXPORT_FOLDER = os.path.join(BASE_DIR, "exports")
 
 os.makedirs(DB_FOLDER, exist_ok=True)
-
+os.makedirs(EXPORT_FOLDER, exist_ok=True)
 
 # ==============================
 # GET CURRENT DB FILE
@@ -102,16 +103,23 @@ def add_log(ul, plant, edi, qty, created_by, status, pdf):
 # LOAD LOGS (CURRENT YEAR)
 # ==============================
 
-def load_logs(tree, cur):
+def load_logs(tree):
+
+    db_path = get_db_path()
+
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
 
     for i in tree.get_children():
         tree.delete(i)
 
-    for row in cur.execute(
+    rows = cur.execute(
         "SELECT date,time,plant,ul,edi,qty,created_by,status,pdf FROM labels ORDER BY id DESC"
-    ):
+    ).fetchall()
 
-        index = len(tree.get_children())
+    conn.close()
+
+    for index, row in enumerate(rows):
 
         tag = "even" if index % 2 == 0 else "odd"
 
@@ -122,7 +130,12 @@ def load_logs(tree, cur):
 # SEARCH LOGS
 # ==============================
 
-def search_logs(tree, cur, text):
+def search_logs(tree, text):
+
+    db_path = get_db_path()
+
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
 
     for i in tree.get_children():
         tree.delete(i)
@@ -141,7 +154,9 @@ def search_logs(tree, cur, text):
     rows = cur.execute(
         query,
         (f"%{text}%", f"%{text}%", f"%{text}%", f"%{text}%")
-    )
+    ).fetchall()
+
+    conn.close()
 
     for row in rows:
         tree.insert("", "end", values=row)
@@ -157,7 +172,7 @@ def get_all_databases():
 
     for file in os.listdir(DB_FOLDER):
 
-        if file.endswith(".db"):
+        if file.startswith("labels_") and file.endswith(".db"):
             dbs.append(os.path.join(DB_FOLDER, file))
 
     return sorted(dbs)
@@ -202,7 +217,10 @@ def export_excel(mode="full"):
 
         for r in data:
 
-            dt = datetime.strptime(f"{r[0]} {r[1]}", "%d/%m/%Y %H:%M:%S")
+            try:
+                dt = datetime.strptime(f"{r[0]} {r[1]}", "%d/%m/%Y %H:%M:%S")
+            except Exception:
+                continue
 
             if cutoff and dt < cutoff:
                 continue
@@ -220,7 +238,10 @@ def export_excel(mode="full"):
         ]
     )
 
-    filename = f"label_logs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    filename = os.path.join(
+        EXPORT_FOLDER,
+        f"label_logs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    )
 
     df.to_excel(filename, index=False)
 
@@ -252,4 +273,5 @@ def dashboard_stats():
     conn.close()
 
     last_ul = last[0] if last else "-"
+
     return count, last_ul
