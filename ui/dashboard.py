@@ -19,17 +19,17 @@ def create_dashboard(parent):
 
     style.configure(
         "CardTitle.TLabel",
-        font=("Segoe UI", 48)
+        font=("Segoe UI", 12)
     )
 
     style.configure(
         "CardValue.TLabel",
-        font=("Segoe UI", 38, "bold"),
+        font=("Segoe UI", 80, "bold"),
         foreground="#0d6efd"
     )
 
     # ---------- CARD GRID ----------
-    card1 = ttk.Frame(container, style="Card.TFrame", padding=25)
+    card1 = ttk.Frame(container, style="Card.TFrame", padding=40)
     card1.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
 
     ttk.Label(
@@ -43,9 +43,9 @@ def create_dashboard(parent):
         text="0",
         style="CardValue.TLabel"
     )
-    count_label.pack(anchor="w", pady=10)
+    count_label.pack(anchor="center", pady=10)
 
-    card2 = ttk.Frame(container, style="Card.TFrame", padding=25)
+    card2 = ttk.Frame(container, style="Card.TFrame", padding=40)
     card2.grid(row=0, column=1, padx=15, pady=15, sticky="nsew")
 
     ttk.Label(
@@ -63,5 +63,6 @@ def create_dashboard(parent):
 
     container.columnconfigure(0, weight=1)
     container.columnconfigure(1, weight=1)
+    container.rowconfigure(0, weight=1)
 
     return dashboard, count_label, last_label
