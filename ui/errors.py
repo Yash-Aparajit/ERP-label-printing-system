@@ -2,10 +2,12 @@ import os
 import shutil
 from tkinter import ttk
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ERROR_FOLDER = os.path.join(BASE_DIR, "error_files")
 INPUT_FOLDER = os.path.join(BASE_DIR, "yet_to_print")
+
 
 def create_errors(parent):
 
@@ -16,7 +18,7 @@ def create_errors(parent):
 
     tree = ttk.Treeview(
         table_frame,
-        columns=("File","Action"),
+        columns=("File", "Action"),
         show="headings"
     )
 
@@ -37,7 +39,7 @@ def create_errors(parent):
 
             if file.endswith(".txt"):
 
-                tree.insert("", "end", values=(file,"Retry"))
+                tree.insert("", "end", values=(file, "Retry"))
 
     def retry():
 
@@ -46,12 +48,14 @@ def create_errors(parent):
         if not item:
             return
 
+        item = item[0]
+
         file = tree.item(item)["values"][0]
 
-        src = os.path.join(ERROR_FOLDER,file)
-        dst = os.path.join(INPUT_FOLDER,file)
+        src = os.path.join(ERROR_FOLDER, file)
+        dst = os.path.join(INPUT_FOLDER, file)
 
-        shutil.move(src,dst)
+        shutil.move(src, dst)
 
         load_errors()
 
@@ -64,5 +68,11 @@ def create_errors(parent):
     retry_btn.pack(pady=10)
 
     load_errors()
+
+    def auto_refresh():
+        load_errors()
+        frame.after(3000, auto_refresh)
+
+    auto_refresh()
 
     return frame
