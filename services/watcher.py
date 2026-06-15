@@ -36,6 +36,11 @@ class TXTHandler(FileSystemEventHandler):
         print("File detected:", event.src_path)
 
         if event.src_path not in self.recent_files:
+
+            if len(self.recent_files_order) >= self.recent_files_order.maxlen:
+                old = self.recent_files_order.popleft()
+                self.recent_files.discard(old)
+
             self.recent_files.add(event.src_path)
             self.recent_files_order.append(event.src_path)
 
@@ -82,7 +87,10 @@ def worker(output_folder, error_folder, log_callback):
 
     while True:
 
-        file_path = processing_queue.get(timeout=1)
+        try:
+            file_path = processing_queue.get(timeout=1)
+        except queue.Empty:
+            continue
 
         try:
 
@@ -92,7 +100,7 @@ def worker(output_folder, error_folder, log_callback):
 
             wait_for_file_complete(file_path)
 
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 line = f.read().strip()
 
             if not line:
