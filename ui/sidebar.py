@@ -14,26 +14,26 @@ def create_sidebar(root, show_dashboard, show_logs, show_errors):
 
     style.configure(
         "Sidebar.TButton",
-        font=("Segoe UI",11),
+        font=("Segoe UI", 11),
         anchor="w",
         padding=12
     )
 
     style.configure(
         "SidebarActive.TButton",
-        font=("Segoe UI",11,"bold"),
+        font=("Segoe UI", 11, "bold"),
         anchor="w",
         padding=12
     )
 
     style.map(
         "Sidebar.TButton",
-        background=[("active","#e6f0ff")]
+        background=[("active", "#e6f0ff")]
     )
 
     # ---------- LOGO ----------
     logo_frame = ttk.Frame(sidebar)
-    logo_frame.pack(fill="x", pady=(20,10))
+    logo_frame.pack(fill="x", pady=(20, 10))
 
     try:
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,19 +43,19 @@ def create_sidebar(root, show_dashboard, show_logs, show_errors):
         logo_label = ttk.Label(logo_frame, image=logo)
         logo_label.image = logo
         logo_label.pack()
-    except:
+    except Exception:
         ttk.Label(
             logo_frame,
             text="COMPANY",
-            font=("Segoe UI",16,"bold")
+            font=("Segoe UI", 16, "bold")
         ).pack()
 
     # ---------- NAV TITLE ----------
     ttk.Label(
         sidebar,
         text="Navigation",
-        font=("Segoe UI",11,"bold")
-    ).pack(anchor="w", padx=20, pady=(15,10))
+        font=("Segoe UI", 11, "bold")
+    ).pack(anchor="w", padx=20, pady=(15, 10))
 
     # ---------- BUTTONS ----------
     dashboard_btn = ttk.Button(
