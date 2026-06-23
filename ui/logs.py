@@ -1,7 +1,6 @@
 import os
 import tkinter as tk
 from tkinter import ttk
-import sqlite3
 
 from database.db import export_excel, search_logs, get_db_path
 
@@ -123,29 +122,27 @@ def create_logs(parent):
 
     def on_row_select(event):
 
-        for item in tree.get_children():
-            tree.item(item, tags=())
-
         selected = tree.selection()
 
+        for item in tree.get_children():
+
+            tags = list(tree.item(item, "tags"))
+
+            if "selected_row" in tags:
+                tags.remove("selected_row")
+
+            tree.item(item, tags=tags)
+
         for item in selected:
-            tree.item(item, tags=("selected_row",))
+
+            tags = list(tree.item(item, "tags"))
+
+            if "selected_row" not in tags:
+                tags.append("selected_row")
+
+            tree.item(item, tags=tags)
 
     tree.bind("<<TreeviewSelect>>", on_row_select)
-
-    # ==============================
-    # ROW HOVER
-    # ==============================
-
-    def on_hover(event):
-
-        row = tree.identify_row(event.y)
-
-        if row:
-            tree.focus(row)
-            tree.selection_set(row)
-
-    tree.bind("<Motion>", on_hover)
 
     # ==============================
     # OPEN PDF ON DOUBLE CLICK
@@ -153,6 +150,9 @@ def create_logs(parent):
 
     def open_pdf(event):
 
+        if tree.identify_region(event.x, event.y) != "cell":
+            return
+        
         selected = tree.selection()
 
         if not selected:
@@ -175,12 +175,7 @@ def create_logs(parent):
 
         text = search_var.get()
 
-        conn = sqlite3.connect(get_db_path())
-        cur = conn.cursor()
-
-        search_logs(tree, cur, text)
-
-        conn.close()
+        search_logs(tree, text)
 
     search_button.config(command=run_search)
     search_entry.bind("<Return>", lambda e: run_search())
